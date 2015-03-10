@@ -65,19 +65,31 @@ class Activity {
 
 private:
 	string location;
-	Day day;
+	double st;
 	double duration;
 	Time start;
+	int convertToMinutes(double t) const {
+		int minutes = (int(t) * 60) + int(60.0 * (t - int(t)));
+		return minutes;
+	}
+
 
 public:
-	Activity (string loc,Day da,double st,double dur):location(loc),day(da),start(st,dur) {};
+	Activity (string loc,Day da,double st,double dur):location(loc),start(da,dur) {};
 	Activity (const Activity& other) = delete;
 	string getLocation (void) {return location;}
 	Time getTime (void) {return start;}
-	double getDuration (void) {return duration;}
-	bool conflicts (const Activity& other) {
-		if (start.day()==other.start.day() && start.hour() < other.start.hour() && start.hour() + duration > other.start.hour()) return false;
-		else return true; 	
+	double getDuration (void) const {return duration;}
+	bool conflicts (const Activity& other) const {
+
+		int x1=convertToMinutes(start.hour());
+		int x2=convertToMinutes(start.hour()+getDuration());
+		int y1=convertToMinutes(other.start.hour());
+		int y2=convertToMinutes(other.start.hour()+other.getDuration());
+
+	//	if (start.day()==other.start.day() && start.hour() < other.start.hour() && start.hour() + duration > other.start.hour()) return false;
+		if (start.day()==other.start.day() && x1 <= y2 && y1 < x2) return true;
+		else return false; 	
 	}
 
 	void print (void) {
@@ -88,6 +100,26 @@ public:
 		cout << endl;
 	
 	}
+};
+
+class Course {
+
+private:
+	CourseId cid;
+	string crs;
+	Activity lecture;
+	Activity session;
+	int credit;
+
+public:
+	Course (CourseId cd, string nm, Activity le, Activity se, int cr) : cid(cd),crs(nm),lecture(le),session(se),credit(cr) {
+		cout << "Nouveau cours : " << cid << endl;
+	}
+
+	~Course () {
+		cout << "Suppression du cours : " << cid << endl;
+	}
+
 };
     //cout << ", durée ";
 
