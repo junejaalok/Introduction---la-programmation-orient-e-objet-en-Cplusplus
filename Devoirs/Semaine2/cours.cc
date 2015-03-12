@@ -144,8 +144,29 @@ public:
     }
 
     bool conflicts(const Course& other) {
-        
+        return (lecture.conflicts(other.lecture) || lecture.conflicts(other.session) || session.conflicts(other.lecture) || session.conflicts(other.session));
     }
+};
+
+class StudyPlan {
+
+private:
+	vector <const Course*> vec;
+
+public:
+	StudyPlan() {};
+	void add_course(const Course& c) {
+		vec.push_back(&c);
+
+	}
+
+
+	void print(void) {
+		
+
+		
+	}
+
 };
     //cout << ", durée ";
 
