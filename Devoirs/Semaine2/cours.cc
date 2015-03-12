@@ -92,7 +92,7 @@ public:
 		else return false; 	
 	}
 
-	void print (void) {
+	void print() const {
 		cout << " le " ;
 		start.print() ;
 		cout << " en " << location <<  ", durée " ;
@@ -129,6 +129,13 @@ public:
         return tot;
     }
 
+    void print() {
+        cout << getId() << ":" << getTitle() << " - cours ";
+        lecture.print();
+        cout << ", exercices ";
+        session.print();
+        cout << ". crédits : " << getCredits() << endl;
+    }
 
 };
     //cout << ", durée ";
