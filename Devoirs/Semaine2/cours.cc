@@ -120,6 +120,8 @@ public:
 		cout << "Suppression du cours : " << cid << endl;
 	}
 
+
+	Course (const Course& other) = delete;
     CourseId getId (void) {return cid;}
     string getTitle (void) {return crs;}
     int getCredits (void) {return credit;}
@@ -137,6 +139,13 @@ public:
         cout << ". crédits : " << getCredits() << endl;
     }
 
+    bool conflicts(const Activity& other) {
+       return this->conflicts(other);
+    }
+
+    bool conflicts(const Course& other) {
+        
+    }
 };
     //cout << ", durée ";
 
