@@ -107,18 +107,28 @@ class Course {
 private:
 	CourseId cid;
 	string crs;
-	Activity lecture;
-	Activity session;
+	const Activity& lecture;
+	const Activity& session;
 	int credit;
 
 public:
-	Course (CourseId cd, string nm, Activity le, Activity se, int cr) : cid(cd),crs(nm),lecture(le),session(se),credit(cr) {
+	Course (CourseId cd, string nm, const Activity& le, const Activity& se, int cr):cid(cd),crs(nm),lecture(le),session(se) {
 		cout << "Nouveau cours : " << cid << endl;
 	}
 
 	~Course () {
 		cout << "Suppression du cours : " << cid << endl;
 	}
+
+    CourseId getId (void) {return cid;}
+    string getTitle (void) {return crs;}
+    int getCredits (void) {return credit;}
+
+    double workload (void) {
+        double tot=lecture.getDuration()+session.getDuration();
+        return tot;
+    }
+
 
 };
     //cout << ", durée ";
