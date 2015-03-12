@@ -140,7 +140,7 @@ public:
     }
 
     bool conflicts(const Activity& other) {
-       return this->conflicts(other);
+       return (lecture.conflicts(other) || session.conflicts(other));
     }
 
     bool conflicts(const Course& other) {
