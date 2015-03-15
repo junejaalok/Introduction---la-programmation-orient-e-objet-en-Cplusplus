@@ -122,16 +122,16 @@ public:
 
 
 	Course (const Course& other) = delete;
-    CourseId getId (void) {return cid;}
-    string getTitle (void) {return crs;}
-    int getCredits (void) {return credit;}
+    CourseId getId (void) const {return cid;}
+    string getTitle (void) const {return crs;}
+    int getCredits (void) const {return credit;}
 
-    double workload (void) {
+    double workload (void) const {
         double tot=lecture.getDuration()+session.getDuration();
         return tot;
     }
 
-    void print() {
+    void print() const {
         cout << getId() << ":" << getTitle() << " - cours ";
         lecture.print();
         cout << ", exercices ";
@@ -139,11 +139,11 @@ public:
         cout << ". crédits : " << getCredits() << endl;
     }
 
-    bool conflicts(const Activity& other) {
+    bool conflicts (const Activity& other) const {
        return (lecture.conflicts(other) || session.conflicts(other));
     }
 
-    bool conflicts(const Course& other) {
+    bool conflicts (const Course& other) const {
         return (lecture.conflicts(other.lecture) || lecture.conflicts(other.session) || session.conflicts(other.lecture) || session.conflicts(other.session));
     }
 };
@@ -151,23 +151,70 @@ public:
 class StudyPlan {
 
 private:
-	vector <const Course*> vec;
+	vector <const Course*> cvec;
+
+	const Course* findcourse (const CourseId& cid) {
+		const Course * temp=nullptr;
+		for (vector<const Course*>::iterator it = cvec.begin() ; it != cvec.end(); ++it) 
+    		if ((*it)->getId() == cid) temp = *it;
+		return temp;
+	}
+
 
 public:
 	StudyPlan() {};
 	void add_course(const Course& c) {
-		vec.push_back(&c);
-
+		cvec.push_back(&c);
 	}
 
-
-	void print(void) {
-		
-
-		
+	bool conflicts (const CourseId& c, vector <CourseId>& myvec) {
+		const Course* t1=findcourse(c);
+		if (t1 == nullptr) return false;
+		else {
+			for (vector<CourseId>::iterator it = myvec.begin() ; it != myvec.end(); ++it) {
+				const Course* t2=findcourse(*it);
+				if (t1->conflicts(*t2)) return true;
+    		}
+    		return false;
+		}
 	}
+
+    void print(const CourseId& cid) {
+    	const Course* t1=findcourse(cid);
+    	if (t1)
+	    	t1->print();
+    }
+
+	int credits (const CourseId& cid) {
+		const Course* t1=findcourse(cid);
+		if (t1) return t1->getCredits();
+		else return 0;
+    }
+
+	double workload (const CourseId& cid) {
+		const Course* t1=findcourse(cid);
+		if (t1) return t1->workload();
+		else return 0;
+    }
+
+    void printCourseSuggestions (vector <CourseId>& myvec) {
+		for (vector<CourseId>::iterator it1 = myvec.begin() ; it1 != myvec.end(); ++it1) {
+			const Course* t1=findcourse(*it1);
+			for (vector<const Course*>::iterator it2 = cvec.begin() ; it2 != cvec.end(); ++it2)
+				if ((*it2)->getId() != t1->getId()) {
+					if ((*it2)->conflicts(*t1)) {
+						(*it2)->print();
+					}
+				}
+    	}    	
+    }
 
 };
+
+
+
+
+
     //cout << ", durée ";
 
 
@@ -224,17 +271,17 @@ int main()
   studyPlan.add_course(history);
   Course finance("ECN-214", "Finance" , financeLecture, financeExercises, 3);
   studyPlan.add_course(finance);
-
+/*
   // Première tentative d'emploi du temps
   Schedule schedule1(studyPlan);
   schedule1.add_course(finance.getId());
   cout << "Emploi du temps 1 :" << endl;
   schedule1.print();
-
+*/
   /* On ne sait pas encore très bien quoi faire : on essaye donc
    * sur une copie de l'emploi du temps précédent.
    */
-  Schedule schedule2(schedule1);
+/*  Schedule schedule2(schedule1);
   schedule2.add_course(history.getId());
   cout << "Emploi du temps 2 :" << endl;
   schedule2.print();
@@ -244,6 +291,6 @@ int main()
   schedule3.add_course(physics.getId());
   cout << "Emploi du temps 3 :" << endl;
   schedule3.print();
-
+*/
   return 0;
 }
