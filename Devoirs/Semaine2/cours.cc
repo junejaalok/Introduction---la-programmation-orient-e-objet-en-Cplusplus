@@ -163,6 +163,13 @@ private:
 
 public:
 	StudyPlan() {};
+	~StudyPlan () {
+		for(vector <const Course*>::const_iterator it = cvec.begin(); it != cvec.end(); it++){
+    		delete *it;
+    	}
+		cvec.clear();
+	}
+
 	void add_course(const Course& c) {
 		cvec.push_back(&c);
 	}
@@ -198,20 +205,46 @@ public:
     }
 
     void printCourseSuggestions (vector <CourseId>& myvec) {
+    	int n=0;
 		for (vector<CourseId>::iterator it1 = myvec.begin() ; it1 != myvec.end(); ++it1) {
 			const Course* t1=findcourse(*it1);
-			for (vector<const Course*>::iterator it2 = cvec.begin() ; it2 != cvec.end(); ++it2)
-				if ((*it2)->getId() != t1->getId()) {
-					if ((*it2)->conflicts(*t1)) {
-						(*it2)->print();
+			if (t1 != nullptr) {
+				for (vector<const Course*>::iterator it2 = cvec.begin() ; it2 != cvec.end(); ++it2) {
+					if ((*it2)->getId() != t1->getId()) {
+						if (!(*it2)->conflicts(*t1)) {
+							(*it2)->print();
+							cout << endl;
+						}
+						else
+							n++;
 					}
 				}
-    	}    	
+			}
+    	}
+    	if (n != 0)
+    		cout << "Aucun cours n'est compatible avec la sélection de cours." << endl;
     }
-
 };
 
+class Schedule {
 
+private:
+	vector <CourseId> civec;
+	const StudyPlan& sp;
+
+public:
+	Schedule(const StudyPlan& plan):sp(plan) {}; 
+	bool add_course(const CourseId& cid) {
+		for (vector<CourseId>::iterator it1 = civec.begin() ; it1 != civec.end(); ++it1) {
+			if (cid.)
+	}
+
+	double computeDailyWorkload () {
+		for (vector<CourseId>::iterator it1 = civec.begin() ; it1 != civec.end(); ++it1) {
+			
+		}
+	}
+};
 
 
 
@@ -271,17 +304,17 @@ int main()
   studyPlan.add_course(history);
   Course finance("ECN-214", "Finance" , financeLecture, financeExercises, 3);
   studyPlan.add_course(finance);
-/*
+
   // Première tentative d'emploi du temps
   Schedule schedule1(studyPlan);
   schedule1.add_course(finance.getId());
   cout << "Emploi du temps 1 :" << endl;
   schedule1.print();
-*/
+
   /* On ne sait pas encore très bien quoi faire : on essaye donc
    * sur une copie de l'emploi du temps précédent.
    */
-/*  Schedule schedule2(schedule1);
+  Schedule schedule2(schedule1);
   schedule2.add_course(history.getId());
   cout << "Emploi du temps 2 :" << endl;
   schedule2.print();
@@ -291,6 +324,6 @@ int main()
   schedule3.add_course(physics.getId());
   cout << "Emploi du temps 3 :" << endl;
   schedule3.print();
-*/
+
   return 0;
 }
