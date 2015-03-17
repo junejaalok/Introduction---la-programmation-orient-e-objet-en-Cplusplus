@@ -160,7 +160,6 @@ private:
 		return temp;
 	}
 
-
 public:
 	StudyPlan() {};
 	~StudyPlan () {
