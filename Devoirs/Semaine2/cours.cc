@@ -228,21 +228,25 @@ public:
 class Schedule {
 
 private:
-	vector <CourseId> civec;
+	vector <CourseId>& cidvec;
 	const StudyPlan& sp;
 
 public:
 	Schedule(const StudyPlan& plan):sp(plan) {}; 
+	
 	bool add_course(const CourseId& cid) {
-		for (vector<CourseId>::iterator it1 = civec.begin() ; it1 != civec.end(); ++it1) {
-			if (cid.)
-	}
-
-	double computeDailyWorkload () {
-		for (vector<CourseId>::iterator it1 = civec.begin() ; it1 != civec.end(); ++it1) {
-			
+		if (sp.conflicts(cid,cidvec)) return false;
+		else {
+			cidvec.push_back(cid);
+			return true;
 		}
 	}
+
+//	double computeDailyWorkload () {
+//		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1) {
+
+//		}
+//	}
 };
 
 
