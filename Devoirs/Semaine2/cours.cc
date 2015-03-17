@@ -228,12 +228,12 @@ public:
 class Schedule {
 
 private:
-	vector <CourseId>& cidvec;
-	const StudyPlan& sp;
+	vector <CourseId> cidvec;
+	StudyPlan& sp;
 
 public:
-	Schedule(const StudyPlan& plan):sp(plan) {}; 
-	
+	Schedule(StudyPlan& plan):sp(plan) {};
+
 	bool add_course(const CourseId& cid) {
 		if (sp.conflicts(cid,cidvec)) return false;
 		else {
@@ -242,11 +242,37 @@ public:
 		}
 	}
 
-//	double computeDailyWorkload () {
-//		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1) {
+	double computeDailyWorkload () {
+		double ans=0.0;
+		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1) {
+			ans += sp.workload(*it1);
+		}
+		ans /= 5.0;
+		return ans;
+	}
 
-//		}
-//	}
+	int computeTotalCredits() {
+		int ans = 0;
+		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1) {
+			ans += sp.credits(*it1);
+		}
+		return ans;
+	}
+
+
+	void print() {
+		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1)
+			sp.print(*it1);
+		cout << endl;//<course_selection>
+		cout << "Total de crédits   : " << computeTotalCredits() << endl;;
+		cout << "Charge journalière : " << computeDailyWorkload() << endl;
+		cout << "Suggestions :" << endl;
+		//for (vector<CourseId>::iterator it2 = cidvec.begin() ; it2 != cidvec.end(); ++it1)
+		sp.printCourseSuggestions(cidvec);
+
+		//<course_suggestions>		
+
+	}
 };
 
 
