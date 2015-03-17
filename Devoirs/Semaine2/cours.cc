@@ -75,30 +75,39 @@ private:
 
 
 public:
-	Activity (string loc,Day da,double st,double dur):location(loc),start(da,dur) {};
+	Activity (string loc,Day da,double st,double dur):location(loc),start(da,st),duration(dur) {};
 	Activity (const Activity& other) = delete;
-	string getLocation (void) {return location;}
-	Time getTime (void) {return start;}
+	string getLocation (void) const {return location;}
+	Time getTime (void) const {return start;}
 	double getDuration (void) const {return duration;}
 	bool conflicts (const Activity& other) const {
-
+//		cout << "name1:: " << this->getLocation() << "  " << start.day() << endl;
 		int x1=convertToMinutes(start.hour());
+//		cout << "x1:: " << x1 << endl;
 		int x2=convertToMinutes(start.hour()+getDuration());
+//		cout << "x2:: " << x2 << endl;
+//		cout << "name2:: " << other.getLocation() << "  " << other.start.day() << endl;
 		int y1=convertToMinutes(other.start.hour());
+//		cout << "y1:: " << y1 << endl;
 		int y2=convertToMinutes(other.start.hour()+other.getDuration());
-
-	//	if (start.day()==other.start.day() && start.hour() < other.start.hour() && start.hour() + duration > other.start.hour()) return false;
-		if (start.day()==other.start.day() && x1 <= y2 && y1 < x2) return true;
-		else return false; 	
+//		cout << "y2:: " << y2 << endl;
+		if (start.day()==other.start.day() && x1 < y2 && y1 < x2) {
+//			cout << " Conflicts" << endl;
+//			cout << "-------------------------" << endl;
+			return true;
+		}
+		else {
+//			cout << " NOT conflict" << endl;
+//			cout << "-------------------------" << endl;
+			return false; 	
+		}
 	}
 
 	void print() const {
-		cout << " le " ;
+		cout << "le " ;
 		start.print() ;
-		cout << " en " << location <<  ", durée " ;
+		cout << " en " << location <<  ", durée ";
 		print_time(duration); 
-		cout << endl;
-	
 	}
 };
 
@@ -112,7 +121,7 @@ private:
 	int credit;
 
 public:
-	Course (CourseId cd, string nm, const Activity& le, const Activity& se, int cr):cid(cd),crs(nm),lecture(le),session(se) {
+	Course (CourseId cd, string nm, const Activity& le, const Activity& se, int cr):cid(cd),crs(nm),lecture(le),session(se),credit(cr) {
 		cout << "Nouveau cours : " << cid << endl;
 	}
 
@@ -132,11 +141,11 @@ public:
     }
 
     void print() const {
-        cout << getId() << ":" << getTitle() << " - cours ";
+        cout << getId() << ": " << getTitle() << " - cours ";
         lecture.print();
         cout << ", exercices ";
         session.print();
-        cout << ". crédits : " << getCredits() << endl;
+        cout << ". crédits : " << getCredits();
     }
 
     bool conflicts (const Activity& other) const {
@@ -162,12 +171,12 @@ private:
 
 public:
 	StudyPlan() {};
-	~StudyPlan () {
+/*	~StudyPlan () {
 		for(vector <const Course*>::const_iterator it = cvec.begin(); it != cvec.end(); it++){
-    		delete *it;
-    	}
+  			delete *it;
+    		}
 		cvec.clear();
-	}
+	}*/
 
 	void add_course(const Course& c) {
 		cvec.push_back(&c);
@@ -180,8 +189,8 @@ public:
 			for (vector<CourseId>::iterator it = myvec.begin() ; it != myvec.end(); ++it) {
 				const Course* t2=findcourse(*it);
 				if (t1->conflicts(*t2)) return true;
-    		}
-    		return false;
+	    		}
+			return false;
 		}
 	}
 
@@ -204,25 +213,25 @@ public:
     }
 
     void printCourseSuggestions (vector <CourseId>& myvec) {
-    	int n=0;
-		for (vector<CourseId>::iterator it1 = myvec.begin() ; it1 != myvec.end(); ++it1) {
-			const Course* t1=findcourse(*it1);
-			if (t1 != nullptr) {
-				for (vector<const Course*>::iterator it2 = cvec.begin() ; it2 != cvec.end(); ++it2) {
-					if ((*it2)->getId() != t1->getId()) {
-						if (!(*it2)->conflicts(*t1)) {
-							(*it2)->print();
-							cout << endl;
-						}
-						else
-							n++;
-					}
-				}
-			}
-    	}
-    	if (n != 0)
+	int cnt=0;
+	for (vector<const Course*>::iterator it2 = cvec.begin() ; it2 != cvec.end(); ++it2) {
+		int pros=0;
+		if (!conflicts((*it2)->getId(),myvec)) pros++;
+		else {
+			pros--;
+			cnt++;
+		}
+		
+		if (pros > 0) {
+			(*it2)->print();
+			cout << endl;
+		}
+
+	}
+    	if (cnt == (cvec.size()))
     		cout << "Aucun cours n'est compatible avec la sélection de cours." << endl;
     }
+
 };
 
 class Schedule {
@@ -261,35 +270,19 @@ public:
 
 
 	void print() {
-		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1)
+		for (vector<CourseId>::iterator it1 = cidvec.begin() ; it1 != cidvec.end(); ++it1) {
 			sp.print(*it1);
-		cout << endl;//<course_selection>
+			cout << endl;
+		}
 		cout << "Total de crédits   : " << computeTotalCredits() << endl;;
-		cout << "Charge journalière : " << computeDailyWorkload() << endl;
+		cout << "Charge journalière : ";
+		print_time(computeDailyWorkload());
+		cout << endl;
 		cout << "Suggestions :" << endl;
-		//for (vector<CourseId>::iterator it2 = cidvec.begin() ; it2 != cidvec.end(); ++it1)
 		sp.printCourseSuggestions(cidvec);
-
-		//<course_suggestions>		
-
+		cout << endl;
 	}
 };
-
-
-
-    //cout << ", durée ";
-
-
-    //cout << ". crédits : ";
-
-
-      //cout << "Aucun cours n'est compatible avec la sélection de cours." << endl;
-
-
-    //cout << "Total de crédits   : ";
-    //cout << "Charge journalière : ";
-    //cout << "Suggestions :" << endl;
-
 
 /*******************************************
  * Ne rien modifier après cette ligne.
