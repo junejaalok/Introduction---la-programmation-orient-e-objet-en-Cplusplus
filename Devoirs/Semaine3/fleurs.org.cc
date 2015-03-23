@@ -6,7 +6,7 @@ using namespace std;
 /* Classe représentant les "fleurs".
  * Une instance de cette classe hors Bouquet est un exemple / une catégorie
  * un type de de fleurs.
- * Les fleurs "réelles" sont les instances présentes dans les bouquets.
+ * Les fleurs "réelles" sont les instances présentes dans les Bouquets.
  */
 class Fleur
 {
