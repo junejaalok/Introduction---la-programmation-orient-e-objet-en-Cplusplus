@@ -21,11 +21,14 @@ private:
    bool promotion;
 
 public:
-
+	friend ostream& operator<<(ostream&, const Fleur&);
     Fleur (string nm,string cl, double pb, bool prf=false, bool pr=false):nom(nm),couleur(cl),prix_base(pb),parfum_(prf),promotion(pr) {};
+
 	double prix (void) const {
-		if (promotion) return prix_base/2.0;
-		else return prix_base;
+		if (promotion) 
+			return prix_base/2.0;
+		else 
+			return prix_base;
 	}
 
 	bool parfum () const {
@@ -33,17 +36,17 @@ public:
 	}
 
 	void affiche (ostream& sortie) const {
-		if (parfum()) 
-			sortie << nom << ' ' << couleur << "  parfumée, prix : " << prix() << " CHF";
+		if (parfum())
+			sortie << nom << ' ' << couleur << " parfumée, prix : " << prix() << " CHF";
 		else
 			sortie << nom << ' ' << couleur << ", prix : " << prix() << " CHF";
 }
 
-    bool operator== (Fleur&);
+    bool operator== (const Fleur&)const;
 
 };
 
-    bool Fleur::operator==(Fleur& other) {
+    bool Fleur::operator==(const Fleur& other) const {
         return (nom==other.nom && couleur==other.couleur && parfum()==other.parfum());
     }
 
@@ -63,23 +66,25 @@ private:
 public:
 
     Bouquet() {};
-    bool parfum() {
-        for (vector<Fleur>::iterator it = fvec.begin() ; it != fvec.end(); ++it)
+	//friend ostream& operator<<(ostream&, Bouquet&);
+    bool parfum() const {
+        for (vector<Fleur>::const_iterator it = fvec.begin() ; it != fvec.end(); ++it)
             if ((*it).parfum())
                 return true;
         return false;
     }
 
-    double prix() {
-        double ans;
-        for (vector<Fleur>::iterator it = fvec.begin() ; it != fvec.end(); ++it)
+    double prix() const {
+        double ans=0.0;
+	//cout << fvec.size() << endl;
+        for (vector<Fleur>::const_iterator it = fvec.begin() ; it != fvec.end(); ++it)
             ans+=((*it).prix());
         if (parfum())
             ans*=2;
         return ans;
     }
  
-   void affiche(ostream& bonq) {
+   void affiche(ostream& bonq) const {
         if (fvec.size()==0)
             bonq << "Encore aucune fleur dans le Bouquet !" << endl;
         else {
@@ -87,40 +92,36 @@ public:
                 bonq << "Bouquet parfumé composé de :" << endl;
             else
                 bonq << "Bouquet composé de :" << endl;
-            for (vector<Fleur>::iterator it = fvec.begin() ; it != fvec.end(); ++it)
+            for (vector<Fleur>::const_iterator it = fvec.begin() ; it != fvec.end(); ++it)
                 bonq << *it << endl;
             bonq << "Prix total : " << prix() << " CHF" << endl;
         }
     }
 
-    void operator+= (Fleur& fl) {
+    void operator+= (const Fleur& fl) {
             fvec.push_back(fl);
     }
 
-    void operator-= (Fleur& fl) {
-        int cnt=0;
-        for (vector<Fleur>::iterator it = fvec.begin() ; it != fvec.end(); ++it) 
-            if (fl == (*it))
-                fvec.erase(it);
+//Ref.: http://stackoverflow.com/questions/4442477/remove-ith-item-from-c-stdvector
+    void operator-= (const Fleur& fl) {
+        for ( int i=fvec.size();i > 0;--i){
+            if (fl == fvec[i-1]) {
+		fvec[i-1] = fvec.back();		
+		fvec.pop_back();
+		i=fvec.size();
+		}
+	}
     }
 
-    Bouquet operator+ (Fleur& fl) {
-        Bouquet ans;
-        ans.fvec=fvec;
-        ans.fvec.push_back(fl);
-        return ans;
+
+    const Bouquet operator+ (const Fleur& fl) {
+	*this += fl;
+        return *this;
     }
 
-    Bouquet operator- (Fleur& fl) {
-        Bouquet ans;
-        int cnt=0;
-        for (vector<Fleur>::iterator it = fvec.begin() ; it != fvec.end(); ++it) {
-           if (fl == (*it))
-               cnt++;
-           else
-               ans.fvec.push_back(*it);
-        }
-        return ans;
+    Bouquet& operator- (const Fleur& fl) {
+	*this -= fl;
+	return *this;
     }
 
 };
@@ -143,7 +144,7 @@ int main()
 
   Fleur r2("Rose", "jaune", 3.0, true); // exemple de rose jaune parfumée
   Fleur r3("Rose", "rouge", 2.0, true, true); // exemple de rose rouge parfumée en promo
-  Bouquet b1;
+Bouquet b1;
   b1 += r1; // ajoute une fleur de type r1
   b1 += r1; // ajoute aurte une fleur de type r1
   b1 += r2;
