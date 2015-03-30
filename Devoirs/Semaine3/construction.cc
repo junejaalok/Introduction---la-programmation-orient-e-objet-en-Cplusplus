@@ -44,7 +44,6 @@ private:
 
 public:
   //Ref. : http://stackoverflow.com/questions/9812411/trying-to-create-a-3-dimensional-vector-in-c
-//  Construction () {};
   Construction(Brique br):contenu(1,vector<vector<Brique> >(1,vector <Brique>(1,br))) {};
   ostream& afficher(ostream& sortie) const ;
   friend ostream& operator<<(ostream&, const Construction&);
@@ -113,15 +112,19 @@ public:
     typedef vector<Brique> Brique1D;
     typedef vector<Brique1D> Brique2D;
     typedef vector<Brique2D> Brique3D;
+	int num =0;
 
-    //os << "Couche " << numéro << " :" << endl;
-    for (Brique3D::const_reverse_iterator i = this->contenu.rbegin(); i != this->contenu.rend(); ++i) {
+    os << "Couche " << num << " :" << contenu.size() << endl;
+    for (Brique3D::const_reverse_iterator i = contenu.rbegin(); i != contenu.rend(); ++i) {
+	cout << "3D" << endl;
       for (Brique2D::const_reverse_iterator j = i->rbegin(); j != i->rend(); ++j) {
+	cout << "2D" << endl;
         for (Brique1D::const_iterator k = j->begin(); k != j->end(); ++k) {
           os << *k;
+		  num++;
         }
-        os << endl;
       }
+        os << endl;
     }
     return os;
   }
@@ -153,25 +156,24 @@ public:
   }
 
 
-const Construction operator*(unsigned int n, Construction const& a)
-{
+const Construction operator*(unsigned int n, Construction const& a){
 	Construction temp(a);
-	for (int i=0;i<n;i++) 
-		temp += a;
-	return temp;
+	for (int i=0;i<n;i++) {
+		temp=temp + a;
+		cout << "I am here in *   " << i << "           ";
+		cout << temp << endl;
+	}
+	return a;
 }
 
-const Construction operator/(unsigned int n, Construction const& a)
-{
+const Construction operator/(unsigned int n, Construction const& a){
 	Construction temp(a);
 	for (int i=0;i<n;i++) 
 		temp ^= a;
 	return temp;
-
 }
 
-const Construction operator%(unsigned int n, Construction const& a)
-{
+const Construction operator%(unsigned int n, Construction const& a){
 	Construction temp(a);
 	for (int i=0;i<n;i++) 
 		temp -= a;
@@ -196,25 +198,24 @@ int main()
   unsigned int hauteur(3); // sans le toit
 
   // on construit les murs
-//Construction maison( largeur * mur );  
-  Construction maison( hauteur / ( profondeur % (largeur * mur) ) );
-
+Construction maison( largeur * mur );  
+//  Construction maison( hauteur / ( profondeur % (largeur * mur) ) );
+//cout << maison << endl;/*
   // on construit le toit
-  Construction toit(profondeur % ( toitG + 2*toitM + toitD ));
-  toit ^= profondeur % (vide + toitG + toitD);
-
+//  Construction toit(profondeur % ( toitG + 2*toitM + toitD ));
+//  toit ^= profondeur % (vide + toitG + toitD);
+//cout << toit << endl;/*
   // on pose le toit sur les murs
-  maison ^= toit;
+//  maison ^= toit;
 
   // on admire notre construction
-  cout << maison << endl;
+//  cout << maison << endl;
 
 //  Construction maison(mur);
 //  Construction toit(toitD);
-//  maison ^= toit;
+//  maison += toit;
 //  maison -= toit;
 //  maison += toit;
-
-  cout << maison << endl;
+cout << maison << endl;
   return 0;
 }
