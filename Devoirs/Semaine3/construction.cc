@@ -52,7 +52,9 @@ public:
 //  friend const Construction operator+(Construction, const Construction&);
 
   Construction& operator^= (const Construction& b) {
-	for(int i=0;i<1;i++) {
+	int a_height=contenu.size();
+	int b_height=b.contenu.size();
+	for(int i=0;i<b_height;i++) {
 	   contenu.push_back(b.contenu[i]);
 	}
 	return *this;
@@ -61,20 +63,20 @@ public:
   Construction& operator-= (const Construction& b) {
 	int a_height=contenu.size();
 	int b_height=b.contenu.size();
-	cout << "a_height " << a_height << endl;
-	cout << "b_height " << b_height << endl;
+//	cout << "a_height " << a_height << endl;
+//	cout << "b_height " << b_height << endl;
 	if (a_height <= b_height) {
 		for(int i=0;i<a_height;i++) {
 //		   contenu.push_back(vector<vector<Brique> >());
 			int a_depth=contenu[i].size();
 			int b_depth=b.contenu[i].size();
-			cout << "i: " << i << endl;
-			cout << "a_depth " << a_depth << endl;
-			cout << "---" << endl;
+//			cout << "i: " << i << endl;
+//			cout << "a_depth " << a_depth << endl;
+//			cout << "---" << endl;
 			for(int j=0;j < b_depth;j++) {
 				contenu[i].push_back(b.contenu[i][j]);
-				cout << " I am in inner loop" << endl;
-				cout << "====" << endl;
+//				cout << " I am in inner loop" << endl;
+//				cout << "====" << endl;
 			}
 		}
 	}
@@ -82,33 +84,33 @@ public:
   }
 
   Construction& operator+= (const Construction& b) {
-	cout << "size of a " << contenu.size() << "  size of b " << b.contenu.size() << endl;
+//	cout << "size of a " << contenu.size() << "  size of b " << b.contenu.size() << endl;
 	int a_height=contenu.size();
 	int b_height=b.contenu.size();
 	if (a_height <= b_height) {
-		cout << "In am sitting here!" << endl;
+//		cout << "In am sitting here!" << endl;
 		for(int i=0;i<a_height;i++) {
 //			contenu.push_back(vector<vector<Brique> >());
 //			cout << "size of a " << contenu.size() << "  size of b " << b.contenu.size() << endl;
-			cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
-			cout << "--" << endl;
+//			cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
+//			cout << "--" << endl;
 			int a_depth=contenu[i].size();
 			int b_depth=b.contenu[i].size();
 			if (a_depth <= b_depth ) {
-				cout << "I am futher inside " << endl;
+//				cout << "I am futher inside " << endl;
 				for(int j=0;j < a_depth;j++) {
-					cout << " one step furter" << endl;
+//					cout << " one step furter" << endl;
 					//contenu[i].push_back(vector<Brique>());
-					cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
-					cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
-					cout << "==" << endl;
-					cout << "i: " << i << " and j: " << j << endl;
+//					cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
+//					cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
+//					cout << "==" << endl;
+//					cout << "i: " << i << " and j: " << j << endl;
 					int a_width=contenu[i][j].size();
 					int b_width=b.contenu[i][j].size();
 					for(int k = 0; k < b_width; k++) {
 						contenu[i][j].push_back(b.contenu[i][j][k]);
-						cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
-						cout << "---------------------//------------------" << endl;
+//						cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
+//						cout << "---------------------//------------------" << endl;
 					}
 				}
 			}
@@ -123,7 +125,7 @@ public:
     typedef vector<Brique> Brique1D;
     typedef vector<Brique1D> Brique2D;
     typedef vector<Brique2D> Brique3D;
-
+//	cout << "size_me " << contenu.size() << endl;
 	for (int i = contenu.size() - 1; i>=0;--i) {
       	os << "Couche " << i << " :" << endl;
 		for (int j = contenu[i].size() -1; j >= 0; --j) {
@@ -155,41 +157,43 @@ public:
     return os;
   }  
 
-  Construction& operator^ (Construction& a, const Construction& b) {
-	a ^= b;
-	return a;
+  const Construction operator^ (const Construction& a, const Construction& b) {
+	Construction temp(a);	
+	temp ^= b;
+	return temp;
   }
 
-  Construction& operator- (Construction& a, const Construction& b) {
-	a -= b;
-	return a;
+  const Construction operator- (const Construction& a, const Construction& b) {
+	Construction temp(a);
+	temp -= b;
+	return temp;
   }
 
-  Construction& operator+ (Construction& a, const Construction& b) {
-	a += b;
-	return a;
+  const Construction operator+ (const Construction& a, const Construction& b) {
+	Construction temp(a);
+	temp += b;
+	return temp;
   }
 
 
 const Construction operator*(unsigned int n, const Construction& a){
 	Construction temp(a);
-	for (int i=0;i<n-1;i++) {
-		temp += a;
-	}
+	for (int i=0;i<n-1;i++)
+		temp = temp + a;
 	return temp;
 }
 
 const Construction operator/(unsigned int n, const Construction& a){
 	Construction temp(a);
 	for (int i=0;i<n-1;i++) 
-		temp ^= a;
+		temp = temp ^ a;
 	return temp;
 }
 
 const Construction operator%(unsigned int n, const Construction& a){
 	Construction temp(a);
 	for (int i=0;i<n-1;i++) 
-		temp -= a;
+		temp = temp - a;
 	return temp;
 }
 
@@ -211,24 +215,17 @@ int main()
   unsigned int hauteur(3); // sans le toit
 
   // on construit les murs
-//Construction maison( largeur / mur );  
-//  Construction maison( hauteur / ( profondeur % (largeur * mur) ) );
-//cout << maison << endl;/*
+  Construction maison( hauteur / ( profondeur % (largeur * mur) ) );
+
   // on construit le toit
   Construction toit(profondeur % ( toitG + 2*toitM + toitD ));
-//  toit ^= profondeur % (vide + toitG + toitD);
-cout << toit << endl;/*
+  toit ^= profondeur % (vide + toitG + toitD);
+
   // on pose le toit sur les murs
-//  maison ^= toit;
+  maison ^= toit;
 
   // on admire notre construction
-//  cout << maison << endl;
+  cout << maison << endl;
 
-//  Construction maison(mur);
-//  Construction toit(toitD);
-//  maison ^= toit;
-//  maison -= toit;
-//  maison += toit;
-cout << maison << endl;*/
   return 0;
 }
