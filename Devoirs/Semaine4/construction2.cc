@@ -13,22 +13,24 @@ protected:
 	
 public:
 	Piece (string nm) : name(nm) {};
-    ostream& afficher (ostream& os) const {
-          os << '"' << name << '"';
-        return os;
-    }
+
+  ostream& afficher (ostream& os) const {
+    os << '"' << name << '"';
+    return os;
+  }
 	
 };
 
 class Simple : public Piece {
-private:
+protected:
 	string orient;
 public:
-	Simple(string nm,string orint=" "):Piece(nm),orient(orint){};
-//    ostream& afficher (ostream& os) const {
-//          os << "pièce simple" << '"' << "name" << '"';
-//        return os;
-//    }
+	Simple (string nm,string orint=""):Piece(nm),orient(orint){};
+    
+  ostream& afficher (ostream& os) const {
+          os << "pièce simple" << '"' << "name" << '"';
+        return os;
+    }
 	
 
 
