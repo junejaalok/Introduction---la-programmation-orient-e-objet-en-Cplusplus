@@ -63,20 +63,12 @@ public:
   Construction& operator-= (const Construction& b) {
 	int a_height=contenu.size();
 	int b_height=b.contenu.size();
-//	cout << "a_height " << a_height << endl;
-//	cout << "b_height " << b_height << endl;
 	if (a_height <= b_height) {
 		for(int i=0;i<a_height;i++) {
-//		   contenu.push_back(vector<vector<Brique> >());
 			int a_depth=contenu[i].size();
 			int b_depth=b.contenu[i].size();
-//			cout << "i: " << i << endl;
-//			cout << "a_depth " << a_depth << endl;
-//			cout << "---" << endl;
 			for(int j=0;j < b_depth;j++) {
 				contenu[i].push_back(b.contenu[i][j]);
-//				cout << " I am in inner loop" << endl;
-//				cout << "====" << endl;
 			}
 		}
 	}
@@ -84,33 +76,18 @@ public:
   }
 
   Construction& operator+= (const Construction& b) {
-//	cout << "size of a " << contenu.size() << "  size of b " << b.contenu.size() << endl;
 	int a_height=contenu.size();
 	int b_height=b.contenu.size();
 	if (a_height <= b_height) {
-//		cout << "In am sitting here!" << endl;
 		for(int i=0;i<a_height;i++) {
-//			contenu.push_back(vector<vector<Brique> >());
-//			cout << "size of a " << contenu.size() << "  size of b " << b.contenu.size() << endl;
-//			cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
-//			cout << "--" << endl;
 			int a_depth=contenu[i].size();
 			int b_depth=b.contenu[i].size();
 			if (a_depth <= b_depth ) {
-//				cout << "I am futher inside " << endl;
 				for(int j=0;j < a_depth;j++) {
-//					cout << " one step furter" << endl;
-					//contenu[i].push_back(vector<Brique>());
-//					cout << "size of a. " << contenu[i].size() << "  size of b. " << b.contenu[i].size() << endl;
-//					cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
-//					cout << "==" << endl;
-//					cout << "i: " << i << " and j: " << j << endl;
 					int a_width=contenu[i][j].size();
 					int b_width=b.contenu[i][j].size();
 					for(int k = 0; k < b_width; k++) {
 						contenu[i][j].push_back(b.contenu[i][j][k]);
-//						cout << "size of a.. " << contenu[i][j].size() << "  size of b.. " << b.contenu[i][j].size() << endl;
-//						cout << "---------------------//------------------" << endl;
 					}
 				}
 			}
@@ -122,10 +99,10 @@ public:
   
   ostream& Construction :: afficher (ostream& os) const {
     //Ref.: https://www.daniweb.com/software-development/cpp/threads/137814/iterate-a-3d-vector
+	//Ref.: https://www.daniweb.com/software-development/cpp/threads/161323/populating-a-3d-vector-array
     typedef vector<Brique> Brique1D;
     typedef vector<Brique1D> Brique2D;
     typedef vector<Brique2D> Brique3D;
-//	cout << "size_me " << contenu.size() << endl;
 	for (int i = contenu.size() - 1; i>=0;--i) {
       	os << "Couche " << i << " :" << endl;
 		for (int j = contenu[i].size() -1; j >= 0; --j) {
