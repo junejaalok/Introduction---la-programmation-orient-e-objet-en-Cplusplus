@@ -1,0 +1,9 @@
+Nous fabriquons une boîte de jeu contenant :
+ 59 exemplaires de pièce simple "brique standard"
+ 1 exemplaire de pièce "porte" composée de :
+    * pièce simple "cadran porte" orienté vers la gauche
+    * pièce simple "battant" orienté vers la gauche
+ 2 exemplaires de pièce "fenetre" composée de :
+    * pièce simple "cadran fenetre"
+    * pièce simple "volet" orienté vers la gauche
+    * pièce simple "volet" orienté vers la droite

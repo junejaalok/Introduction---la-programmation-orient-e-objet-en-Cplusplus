@@ -27,19 +27,23 @@ protected:
 	string orient;
 public:
 	Simple (string nm,string orint=""):Piece(nm),orient(orint){};
+    ostream& afficher(ostream& os) const ;
   friend ostream& operator<<(ostream&, const Simple&);
 };
 
-  ostream& operator<< (ostream& os,const Simple& other) {
-    os << "pièce simple ";
-    other.afficher(os);
-    if (!other.orient.empty())
-      os << " orienté vers la " << other.orient << endl;
+  ostream& Simple :: afficher (ostream& os) const {
+    Piece :: afficher(os);
+    if (!orient.empty())
+      os << " orienté vers la " << orient << endl;
     else
       os << endl;
     return os;
   }
 
+  ostream& operator<< (ostream& os,const Simple& other) {
+    os << "pièce simple ";
+    return other.afficher(os);
+  }
 
 class Composee : public Piece{
 private:
@@ -47,6 +51,7 @@ private:
 
 public:
 	Composee (string nm):Piece(nm) {};
+    ostream& afficher(ostream& os) const ;
 
   friend ostream& operator<<(ostream&, const Composee&);
 	void construire (const Simple& sm) {
@@ -54,17 +59,22 @@ public:
 	}
 };
 
-  ostream& operator<< (ostream& os,const Composee& other) {
-    os << "pièce ";
-    other.afficher(os);
+  ostream& Composee :: afficher (ostream& os) const {
+    Piece :: afficher(os);
     os << " composée de :" << endl;
-    for (vector<Simple>::const_iterator it = other.svec.begin() ; it != other.svec.end(); ++it) {
+    for (vector<Simple>::const_iterator it = svec.begin() ; it != svec.end(); ++it) {
       os << "    * ";
       os << *it;
     }
     return os;
   }
 
+  ostream& operator<< (ostream& os,const Composee& other) {
+    os << "pièce ";
+    return other.afficher(os);
+  }
+
+/*******************************************
 /*******************************************
  * Ne rien modifier après cette ligne.
  *******************************************/
