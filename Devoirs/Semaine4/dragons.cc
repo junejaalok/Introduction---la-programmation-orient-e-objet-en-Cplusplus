@@ -23,7 +23,7 @@ protected:
 public:
   Creature (string nm, int ni, int pdv, int fr, int pos=0) : nom_(nm),niveau_(ni),points_de_vie_(pdv),force_(fr),position_(pos) {} ;
   bool vivant() {
-    if (points_de_vie_ > 0 )return true;
+    if (points_de_vie_ > 0 ) return true;
     else return false;
   }
 
@@ -33,28 +33,35 @@ public:
   }
 
   void deplacer(int n) {
-    position_ += n;
+    if (vivant())
+      position_ += n;
+  }
+
+  int position() {
+    return position_ ;
   }
 
   void adieux(){
-    cout << nom_ << " n'est plus!";
+    cout << nom_ << " n'est plus !" << endl;
   }
 
   void faiblir (int n) {
+//    cout << "points_de_vie_  before   " << points_de_vie_ << endl;  
     if (vivant()) {
       points_de_vie_ -= n;
     }
-    else {
+    if (!vivant()) {
+//      cout << "I am here in here----------------------------------------------" << endl;
       points_de_vie_ = 0;
       adieux();
     }  
+//    cout << "points_de_vie_  after   " << points_de_vie_ << endl;
+//    cout << "----------------------" << endl;
   }
-    
+  //  
   void afficher () {
-    cout << nom_ << ", niveau: " << niveau_ << ", points de vie: " << points_de_vie_ <<", force: " << force_ << ", points d'attaque: " << points_attaque() << ", position: " << position_ ;
+    cout << nom_ << ", niveau: " << niveau_ << ", points de vie: " << points_de_vie_ <<", force: " << force_ << ", points d'attaque: " << points_attaque() << ", position: " << position_ << endl;
   }
-
-
 };
 
 class Dragon : public Creature {
@@ -65,20 +72,53 @@ private:
 public:
   Dragon (string nm, int ni, int pdv, int fr, int flm,int pos=0) : Creature(nm,ni,pdv,fr,pos), portee_flamme_(flm) {} ;
   void voler(int pos) {
-    position_ += pos;
+    if (vivant())
+    position_ = pos;
   }
 
   void souffle_sur(Creature& bete) {
-    if (vivant() and bete.vivant()) {
-      
+    int d=distance(position_,bete.position());
+    if (vivant() and bete.vivant() and d <= portee_flamme_) {
+//      cout << "bete hydre1" << endl;
+      bete.faiblir(points_attaque());
+//      cout << "dragon1" << endl;
+      faiblir(d);
+
+      if (vivant() and !bete.vivant())
+        niveau_++;
     }
-
-
   }
-
-
-
 };
+
+class Hydre : public Creature {
+
+private:
+  int longueur_cou_;
+  int dose_poison_;
+
+public:
+  Hydre (string nm, int ni, int pdv, int fr, int lc, int dp, int pos=0) : Creature(nm,ni,pdv,fr,pos), longueur_cou_(lc), dose_poison_(dp) {} ;
+
+  void empoisonne(Creature& bete) {
+    int d=distance(position_,bete.position());
+//    cout << "d  " << d << endl;
+//    cout << vivant() << endl;
+//    cout << bete.vivant() << endl;
+    if (vivant() and bete.vivant() and d <= longueur_cou_) {
+//      cout << "bete dragon2" << endl;
+//      cout << points_attaque() << " : " << dose_poison_ << endl; 
+      bete.faiblir(points_attaque()+dose_poison_);
+    if (!bete.vivant())
+      niveau_++;
+    }
+  }    
+};
+
+void combat(Dragon& dr, Hydre& hy) {
+  hy.empoisonne(dr);
+  dr.souffle_sur(hy);
+}
+
 /*******************************************
  * Ne rien modifier après cette ligne.
  *******************************************/

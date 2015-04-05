@@ -1,0 +1,48 @@
+Dragon rouge, niveau: 2, points de vie: 10, force: 3, points d'attaque: 6, position: 0
+se prépare au combat avec :
+Hydre maléfique, niveau: 2, points de vie: 10, force: 1, points d'attaque: 2, position: 42
+
+1er combat :
+    les créatures ne sont pas à portée, donc ne peuvent pas s'attaquer.
+Après le combat :
+Dragon rouge, niveau: 2, points de vie: 10, force: 3, points d'attaque: 6, position: 0
+Hydre maléfique, niveau: 2, points de vie: 10, force: 1, points d'attaque: 2, position: 42
+
+Le dragon vole à proximité de l'hydre :
+Dragon rouge, niveau: 2, points de vie: 10, force: 3, points d'attaque: 6, position: 41
+
+L'hydre recule d'un pas :
+Hydre maléfique, niveau: 2, points de vie: 10, force: 1, points d'attaque: 2, position: 43
+
+2e combat :
+  + l'hydre inflige au dragon une attaque de 3 points
+      [ niveau (2) * force (1) + poison (1) = 3 ] ;
+  + le dragon inflige à l'hydre une attaque de 6 points
+      [ niveau (2) * force (3) = 6 ] ;
+  + pendant son attaque, le dragon perd 2 points de vie supplémentaires
+       [ correspondant à la distance entre le dragon et l'hydre : 43 - 41 = 2 ].
+Après le combat :
+Dragon rouge, niveau: 2, points de vie: 5, force: 3, points d'attaque: 6, position: 41
+Hydre maléfique, niveau: 2, points de vie: 4, force: 1, points d'attaque: 2, position: 43
+
+Le dragon avance d'un pas :
+Dragon rouge, niveau: 2, points de vie: 5, force: 3, points d'attaque: 6, position: 42
+
+3e combat :
+  + l'hydre inflige au dragon une attaque de 3 points
+      [ niveau (2) * force (1) + poison (1) = 3 ] ;
+  + le dragon inflige à l'hydre une attaque de 6 points
+      [ niveau (2) * force (3) = 6 ] ;
+  + pendant son attaque, le dragon perd 1 point de vie supplémentaire
+       [ correspondant à la distance entre le dragon et l'hydre : 43 - 42 = 1 ] ;
+  + l'hydre est vaincue et le dragon monte au niveau 3.
+Hydre maléfique n'est plus !
+Après le combat :
+Dragon rouge, niveau: 3, points de vie: 1, force: 3, points d'attaque: 9, position: 42
+Hydre maléfique, niveau: 2, points de vie: 0, force: 1, points d'attaque: 0, position: 43
+
+4e Combat :
+    quand une créature est vaincue, rien ne se passe.
+Après le combat :
+Dragon rouge, niveau: 3, points de vie: 1, force: 3, points d'attaque: 9, position: 42
+Hydre maléfique, niveau: 2, points de vie: 0, force: 1, points d'attaque: 0, position: 43
