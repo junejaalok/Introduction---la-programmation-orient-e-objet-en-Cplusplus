@@ -6,7 +6,14 @@ using namespace std;
 /*******************************************
  * Completez le programme à partir d'ici.
  *******************************************/
-class OptionVoyage {
+class Affichable {
+
+public:
+  virtual void affiche (ostream& sortie) = 0;  
+
+};
+
+class OptionVoyage : public Affichable {
 
 protected:
   string name_;
@@ -14,6 +21,7 @@ protected:
 
 public:
   OptionVoyage(string nm, double ff):name_(nm),flat_fee_(ff) {};
+  friend ostream& operator<<(ostream&, const OptionVoyage&);
 
   string nom() const {
     return name_;
@@ -25,22 +33,51 @@ public:
 
   void affiche (ostream& sortie) const {
     sortie << nom() << " -> " << prix() << "CHF" << endl;
-}
+  }
+};
 
+  ostream& operator<< (ostream& os,const OptionVoyage& other) {
+    other.affiche(os);
+    return os;
+  }
+
+class Sejour : public OptionVoyage {
+
+private:
+  int nights_;
+  double ppn_;
+
+public:
+  Sejour (string nm, double ff, int ngt, double prc):OptionVoyage(nm,ff),nights_(ngt),ppn_(prc) {};
+  double prix () {
+    return (( nights_ * ppn_ ) + prix());
+  }
 
 };
 
+class Transport : public OptionVoyage {
+
+private:
+  bool duration_;
+  static double TARIF_LONG;
+  static double TARIF_BASE;
+
+public:
+  Transport (string nm, double ff, bool dur=false):OptionVoyage(nm,ff),duration_(dur) {};
+  double prix() {
+    if (duration_) 
+      return TARIF_LONG;
+    else
+      return (TARIF_BASE + prix());
+  }
+
+};
+
+double Transport :: TARIF_LONG(1500.0);
+double Transport :: TARIF_BASE(200.0);
 
 
 
-    out << "Voyage de "
-        <<  " à "
-
-      out << ":  vous n'avez rien réservé !" << endl;
-      out << ", avec pour options : " << endl;
-
-      out << "Prix total : "
-          << " CHF"
 
 
 /*******************************************
