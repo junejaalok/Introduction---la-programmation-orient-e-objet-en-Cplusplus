@@ -92,7 +92,8 @@ private:
 
 public:
     KitVoyage(string depr,string dest):dep_(depr),des_(dest) {};
-    double prix() const {
+    friend ostream& operator<<(ostream&, const KitVoyage&);
+    double prix(void) const {
         double tot;
         for (vector<const OptionVoyage*>::const_iterator it = ovec.begin() ; it != ovec.end(); ++it) {
             tot += (*it)->prix();
@@ -121,6 +122,11 @@ public:
         }
    }
 };
+
+  ostream& operator<< (ostream& os,const KitVoyage& other) {
+    other.affiche(os);
+    return os;
+  }
 
 
 
