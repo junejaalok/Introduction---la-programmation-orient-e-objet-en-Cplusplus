@@ -9,7 +9,8 @@ using namespace std;
 class Affichable {
 
 public:
-  virtual void affiche (ostream& sortie) = 0;  
+  //Pure virtual function
+  virtual void affiche (ostream& sortie) const = 0;
 
 };
 
@@ -27,12 +28,12 @@ public:
     return name_;
   }
 
-  double prix() const {
+  virtual double prix() const {
     return flat_fee_;
   }
 
   void affiche (ostream& sortie) const {
-    sortie << nom() << " -> " << prix() << "CHF" << endl;
+    sortie << nom() << " -> " << this->prix() << "CHF" << endl;
   }
 };
 
@@ -49,8 +50,8 @@ private:
 
 public:
   Sejour (string nm, double ff, int ngt, double prc):OptionVoyage(nm,ff),nights_(ngt),ppn_(prc) {};
-  double prix () {
-    return (( nights_ * ppn_ ) + prix());
+  double prix () const {
+    return (( nights_ * ppn_ ) + OptionVoyage::prix());
   }
 
 };
@@ -64,19 +65,62 @@ private:
 
 public:
   Transport (string nm, double ff, bool dur=false):OptionVoyage(nm,ff),duration_(dur) {};
-  double prix() {
-    if (duration_) 
+  double prix() const {
+    if (duration_)
       return TARIF_LONG;
     else
       return (TARIF_BASE + prix());
   }
-
 };
 
 double Transport :: TARIF_LONG(1500.0);
 double Transport :: TARIF_BASE(200.0);
 
+class OptionCombinee : public Sejour, public Transport{
+public:
+    OptionCombinee (string nm, double ff, int ngt, double prc,bool dur=false):Sejour(nm,ff,ngt,prc),Transport(nm,ff,dur){};
+    double prix() {
+        return (0.75 * ( Sejour::prix() + Transport::prix() ));
+    }
+};
 
+class KitVoyage {
+private:
+    vector <const OptionVoyage*> ovec;
+    string dep_;
+    string des_;
+
+public:
+    KitVoyage(string depr,string dest):dep_(depr),des_(dest) {};
+    double prix() const {
+        double tot;
+        for (vector<const OptionVoyage*>::const_iterator it = ovec.begin() ; it != ovec.end(); ++it) {
+            tot += (*it)->prix();
+        }
+        cout << tot << endl;
+        return tot;
+    
+    }
+    void ajouter_option(const OptionVoyage& op) {
+        ovec.push_back(&op);
+    }
+    
+    void annuler(){
+        ovec.clear();
+    }
+  
+    void affiche (ostream& sortie) const {
+        if (ovec.empty())
+            sortie << "Voyage de "<< dep_ << " a " << des_ << ": vous n'avez rien réservé !" << endl;
+        else {
+            sortie << "Voyage de "<< dep_ << " a " << des_ << ": vous n'avez rien réservé !" << endl;
+            for (vector<const OptionVoyage*>::const_iterator it = ovec.begin() ; it != ovec.end(); ++it) {
+               sortie << *it;
+            }
+            sortie << "Prix total : " << prix() << " CHF" << endl;
+        }
+   }
+};
 
 
 
