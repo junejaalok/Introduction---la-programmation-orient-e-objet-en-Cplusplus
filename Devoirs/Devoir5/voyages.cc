@@ -15,7 +15,6 @@ public:
 };
 
 class OptionVoyage : public Affichable {
-
 protected:
   string name_;
   double flat_fee_;
@@ -28,7 +27,7 @@ public:
     return name_;
   }
 
-  virtual double prix() const {
+  double prix() const {
     return flat_fee_;
   }
 
@@ -42,7 +41,7 @@ public:
     return os;
   }
 
-class Sejour : public OptionVoyage {
+class Sejour : public virtual OptionVoyage {
 
 private:
   int nights_;
@@ -56,8 +55,7 @@ public:
 
 };
 
-class Transport : public OptionVoyage {
-
+class Transport : public virtual OptionVoyage {
 private:
   bool duration_;
   static double TARIF_LONG;
@@ -65,7 +63,7 @@ private:
 
 public:
   Transport (string nm, double ff, bool dur=false):OptionVoyage(nm,ff),duration_(dur) {};
-  double prix() const {
+  virtual double prix() const {
     if (duration_)
       return TARIF_LONG;
     else
@@ -78,7 +76,7 @@ double Transport :: TARIF_BASE(200.0);
 
 class OptionCombinee : public Sejour, public Transport{
 public:
-    OptionCombinee (string nm, double ff, int ngt, double prc,bool dur=false):Sejour(nm,ff,ngt,prc),Transport(nm,ff,dur){};
+    OptionCombinee (string nm, double ff, int ngt, double prc,bool dur=false):Sejour(nm,ff,ngt,prc),Transport(nm,ff,dur),OptionVoyage(nm,ff) {};
     double prix() {
         return (0.75 * ( Sejour::prix() + Transport::prix() ));
     }
