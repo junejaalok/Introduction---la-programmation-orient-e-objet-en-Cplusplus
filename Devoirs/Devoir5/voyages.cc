@@ -86,7 +86,7 @@ public:
     }
 };
 
-class KitVoyage : public Affichable {
+class KitVoyage : public Affichable   {
 private:
     vector <const OptionVoyage*> ovec;
     string dep_;
