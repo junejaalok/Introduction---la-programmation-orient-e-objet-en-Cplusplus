@@ -88,13 +88,13 @@ public:
   int gain (int winning_number) const {
     int amount = 0;
     if (strt != nullptr)
-      amount = 0;
-      //amount = strt->gain(winning_number);
+      //amount = 0;
+      amount = strt->gain(winning_number);
     return amount;
   }
 };
 
-class Roulette : public Mise {
+class Roulette {
 protected:
   vector<const Joueur*> pvec;
   int numdrawn_;
@@ -136,14 +136,14 @@ public:
     return gain;
   }
 
-  virtual int perte_mise(int player_bet) = 0;
+  virtual int perte_mise(int player_bet) const = 0;
   virtual void affiche (ostream& out) const = 0;
 
   void annoncer() const {
     cout << "Croupier : le numéro du tirage est le " << tirage() << endl;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
       if (!(*it)->gain(tirage()))
-        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et perd " << (*it)->perte_mise() << endl;
+        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et perd " << this->perte_mise(gain_maison()) << endl;
       else
         cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et gagne " << (*it)->gain(tirage()) << endl;
     }
@@ -161,7 +161,7 @@ int Roulette::casino_bal=0;
 class RouletteFrancaise : public Roulette {
 public:
   RouletteFrancaise () {};
-  int perte_mise(int player_bet) {
+  int perte_mise(int player_bet) const {
     int tot=0;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
       tot += (*it)->mise();
@@ -169,7 +169,7 @@ public:
     return tot;
   }
 
-  void afficher(ostream& out) {
+  void affiche(ostream& out) const {
     out << "Roulette française :" << endl;
   }
 };
@@ -179,7 +179,7 @@ public:
 class RouletteAnglaise : public Roulette {
 public:
   RouletteAnglaise () {};
-  int perte_mise(int player_bet) {
+  int perte_mise(int player_bet) const {
     int tot=0;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
       tot += ((*it)->mise())/2;
@@ -187,7 +187,7 @@ public:
     return tot;
   }
 
-  void afficher(ostream& out) {
+  void affiche(ostream& out) const {
     out << "Roulette anglaise :" << endl;
   }
 };
