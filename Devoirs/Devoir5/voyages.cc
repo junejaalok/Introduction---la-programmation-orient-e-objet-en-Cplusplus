@@ -32,10 +32,6 @@ public:
   }
 
 
-  //virtual double calc_prix() const=0;//{
-    //return this->prix();
-  //}
-
   void affiche (ostream& sortie) const {
     sortie << "   - " << nom() << " -> " << prix() << " CHF";
   }

@@ -10,14 +10,14 @@ using namespace std;
 class Mise {
 protected:
   int mise_; // number of chips set
-  int mise () {
+  int mise () const {
     return mise_;
   }
 
 public:
   Mise () {};
   Mise (int n): mise_(n) {};
-  virtual int gain (int winning_number) = 0;
+  virtual int gain (int winning_number) const = 0;
 };
 
 // Bet on number
@@ -28,7 +28,7 @@ protected:
 public:
   Pleine (int cnt,int betnn) : Mise(cnt),betonnum_(betnn) {};
   Pleine() {};
-  int gain (int winning_number) {
+  int gain (int winning_number) const {
     int amount=0;
     if (winning_number == betonnum_)
       amount = Mise::mise() * factor;
@@ -47,7 +47,7 @@ public:
   Rouges(int cnt) : Mise(cnt) {};
   Rouges() {};
 
-  int gain (int winning_number) {
+  int gain (int winning_number) const {
     int arraySize = sizeof(red)/sizeof(red[0]);
     int amount=0;
     for(int i = 0; i < arraySize; i++){
@@ -71,29 +71,30 @@ public:
   Joueur (string nm) : nom_(nm) {};
   Joueur(const Joueur& that) = delete;
   
-  string nom () {
+  string nom () const {
     return nom_;
   }
   void set_strategie(Mise *strategie) {
     strt = strategie;
   }
 
-  int mise() {
+  int mise() const {
     int cnt=0;
     if (strt != nullptr)
-      cnt = Mise::mise();
+      cnt = mise();
     return cnt;
   }
 
-  int gain (int winning_number) {
+  int gain (int winning_number) const {
     int amount = 0;
     if (strt != nullptr)
-      amount = strt->gain(winning_number);
+      amount = 0;
+      //amount = strt->gain(winning_number);
     return amount;
   }
 };
 
-class Roulette {
+class Roulette : public Mise {
 protected:
   vector<const Joueur*> pvec;
   int numdrawn_;
@@ -101,22 +102,22 @@ protected:
 
 public:
   Roulette() {};
-  Roulette(const Roulette& that) = delete
+  Roulette(const Roulette& that) = delete;
   friend ostream& operator<<(ostream&, const Roulette&);
-  void participe (const Roulette& op) {
-    if (nombre_participants() <= 10)
+
+  void participe (const Joueur& op) {
     pvec.push_back(&op);
   }
 
-  int bal () {
+  int bal () const {
     return casino_bal;
   }
 
-  int tirage() {
+  int tirage() const {
     return numdrawn_;
   }
 
-  int nombre_participants() {
+  int nombre_participants() const {
     return pvec.size();
   }
 
@@ -125,36 +126,39 @@ public:
   }
 
   int gain_maison() const {
-    if ()
+    int gain=0;
+    for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
+      if (!(*it)->gain(tirage()))
+        gain += (*it)->mise();
+      else
+        gain -= (*it)->gain(tirage());
+    }
+    return gain;
   }
 
   virtual int perte_mise(int player_bet) = 0;
   virtual void affiche (ostream& out) const = 0;
 
-  void annoncer() {
-    cout << "Croupier : le numéro du tirage est le "<< tirage() << endl;
+  void annoncer() const {
+    cout << "Croupier : le numéro du tirage est le " << tirage() << endl;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
-               sortie << **it << endl;
-      if ()
-      cout << "Le joueur" << (*it)->nom() << " a misé " << <montant1> " et perd " << (*it)->perte_mise() << endl;
-  Le joueur <nom joueur2> a misé <montant2> et gagne <gain2>
-  ...
-  Le joueur <nom joueurX> a misé <montantX> et gagne <gainX>
-
+      if (!(*it)->gain(tirage()))
+        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et perd " << (*it)->perte_mise() << endl;
+      else
+        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et gagne " << (*it)->gain(tirage()) << endl;
+    }
     cout << "Gain/perte du casino : " << bal() << endl;
   }
 };
 
 ostream& operator<< (ostream& os,const Roulette& other) {
-  other->affiche(os);
+  other.affiche(os);
   return os;
 }
 
 int Roulette::casino_bal=0;
 
 class RouletteFrancaise : public Roulette {
-private:
-  RouletteFrancaise() {};
 public:
   RouletteFrancaise () {};
   int perte_mise(int player_bet) {
@@ -173,8 +177,6 @@ public:
 
 
 class RouletteAnglaise : public Roulette {
-private:
-  RouletteAnglaise() {};
 public:
   RouletteAnglaise () {};
   int perte_mise(int player_bet) {
