@@ -1,0 +1,333 @@
+Exercise 1 — Bunch of flowers
+The goal of this exercise is to develop some functionalities to help composing bunches of flowers.
+
+1.1 Description
+Download the source code available at the course webpage (https://d396qusza40orc.cloudfront.net/intropoocpp/assignments/fleurs.cc) and complete it according to the instructions below.
+
+WARNING: you shall not modify neither the beginning nor the end of the provided file. It's thus mandatory to proceed as follows:
+
+save the downloaded file as fleurs.cc or fleurs.cpp;
+
+write your code between these two provided comments:
+
+/*******************************************
+ * Complétez le programme à partir d'ici.
+ *******************************************/
+
+/*******************************************
+ * Ne rien modifier après cette ligne.
+ *******************************************/
+save and test your program to be sure that it works properly; try for instance the values used in the example given below;
+
+upload the modified file (still named fleurs.cc or fleurs.cpp) in "OUTPUT submission" (not in "Additional"!).
+
+The provided program composes a bunch of flowers. Flowers can be added or removed from the bunch.
+
+1.1.1 The Fleur class
+
+A ‘‘flower'' (‘‘fleur'' in French) is characterized by :
+
+a name (called ‘‘nom'', of string type);
+
+a color(couleur, also of string type);
+
+a basic price per unit,(prix_base, of double type);
+
+an indication whether the flower is perfumed or not (parfum_, with trailing underscore, of bool type);
+
+and an indication to know whether the flower is on sale (promotion, of bool type).
+
+The Fleur class comprises :
+
+a constructor initializing the attributes using parameters given in the order shown by the provided main() ; a default constructor will not be necessary but the last two parameters will have false as default value;
+
+a prix method returning the flower's price : the price will be the base price if the flower is not on sale; otherwise, the price will be half the base price;
+
+a bool parfum() method indicating whether the flower is perfumed or not;
+
+an affiche method, of prototype
+
+void affiche(ostream& sortie) const ;
+
+displaying, in the (ostream) stream passed as an argument, the characteristics of the flower. This characteristics have to be displayed in strict accordance with the following format :
+
+<nom> <couleur> parfumée, prix : <prix> CHF
+if the flower is perfumed, or :
+
+<nom> <couleur>, prix : <prix> CHF
+if the flower is not.
+
+<nom> is the flower's name, <couleur> its color, and <prix> its price; there is no newline at the end of the displayed message.
+
+an overloading of the operator display << for this class ; this overload will use the previously written affiche method;
+
+an overloading of the == operator returning true if two flowers are identical, false otherwise. Two flowers are considered identical if they have the same name, the same color, and the two flowers are both either perfumed or not (neither the price nor the fact that the flower is on sale or not is involved in the comparison).
+
+1.1.2 The Bouquet class
+
+A ‘‘bunch of flowers'' (‘‘bouquet'' in French) will be modeled using a dynamic array (vector) of Fleur.
+
+The Bouquet class offers the following methods :
+
+a method bool parfum() returning true if the bunch is perfumed and false otherwise; a bunch is perfumed if at least one of its flowers is perfumed;
+
+a method prix without parameters returning the price of the bunch of flowers; This is the sum of the prices of all its flowers; this sum is multiplied by two if the bunch is perfumed;
+
+an affiche method taking as an argument an ostream& type and returning nothing; This method will display the characteristics of the bunch of flowers respecting rigorously the following format :
+
+Encore aucune fleur dans le bouquet !
+if the bunch does not contain any flower, or :
+
+Bouquet parfumé composé de :
+<fleur1>
+..
+<fleurN>
+Prix total : <prix_bouquet> CHF
+if the bunch is perfumed, or :
+
+Bouquet composé de :
+<fleur1>
+..
+<fleurN>
+Prix total : <prix_bouquet> CHF
+if the bunch of flowers is not perfumed.
+
+<fleurX> is the display of the Xth flower of the bunch in the format specified by the overload of the << operator. There is a newline after displaying each flower and after displaying the price of the bunch.
+
+an overload of the display operator, i.e., <<, for this class ; this overload has to use the affiche method of the Bouquet class;
+
+an overload of the += operator which allows adding a flower to the bunch, the flower will always be added at the end.
+
+an overload of the -= operator taking as a parameter a flower and removing from the bunch all the flowers identical to the latter (according to the definition of the == operator);
+
+an overload of the + operator congruent to its usage in the provided main;
+
+an overload of the - operator congruent to its usage in the provided main;
+
+1.2 Execution examples
+The example below is running the supplied main program:
+
+Rose jaune, prix : 1.5 CHF
+Bouquet parfumé composé de :
+Rose jaune, prix : 1.5 CHF
+Rose jaune, prix : 1.5 CHF
+Rose jaune parfumée, prix : 3 CHF
+Rose rouge parfumée, prix : 1 CHF
+Prix total : 14 CHF
+
+Bouquet parfumé composé de :
+Rose jaune parfumée, prix : 3 CHF
+Rose rouge parfumée, prix : 1 CHF
+Prix total : 8 CHF
+
+Bouquet parfumé composé de :
+Rose jaune parfumée, prix : 3 CHF
+Rose rouge parfumée, prix : 1 CHF
+Rose jaune, prix : 1.5 CHF
+Prix total : 11 CHF
+
+Bouquet composé de :
+Rose jaune, prix : 1.5 CHF
+Prix total : 1.5 CHF
+Exercise 2 — Building
+The purpose of this exercise is to write a program able to construct "buildings" based on "building blocks" using C++ operators.
+
+This exercise is simpler than it may first seem. Don't go too far but follow the proposed (section 2.2).
+
+2.1 Description
+Download the source code available at the course webpage (https://d396qusza40orc.cloudfront.net/intropoocpp/assignments/construction.cc) and complete it according to the instructions below.
+
+WARNING: you shall not modify neither the beginning nor the end of the provided file. It's thus mandatory to proceed as follows:
+
+save the downloaded file as construction.cc or construction.cpp;
+
+write your code between these two provided comments:
+
+/*******************************************
+ * Complétez le programme à partir d'ici.
+ *******************************************/
+
+/*******************************************
+ * Ne rien modifier après cette ligne.
+ *******************************************/
+save and test your program to be sure that it works properly; try for instance the values used in the example given below;
+
+upload the modified file (still named construction.cc or construction.cpp) in "OUTPUT submission" (not in "Additional"!).
+
+The provided code
+
+declares the types Forme (English: shape) and Couleur (English: color) which are useful for the ‘‘building blocks''; for simplicity, we use the type string;
+
+starts the declaration of the class Brique (English: brick), described further below, which is used for representing the ‘‘building blocks'';
+
+inside main(), creates multiple ‘‘building blocks'' and creates a ‘‘building'' which we can represent graphically like this:
+
+
+
+An example of output for the code is provided further below.
+
+The end of the definition of class Brique and the definition of class Construction, described below, are missing and you are asked to provide them.
+
+2.1.1 The class Brique
+
+The class Brique represents the ‘‘building blocks'' of our buildings, as shown in the following example:
+
+
+
+Every Brique is characterised by a shape and a color, as defined in the provided construction.cc file.
+
+You must complete the definition of the class Brique by:
+
+adding a constructor taking two parameters of type Forme and Couleur (in this order); there is no default constructor for this class;
+
+adding a public method with the protoype
+
+ostream& afficher(ostream& sortie) const ;
+
+which prints the content of the object using the format:
+
+–
+if the color is not an empty string:
+
+(shape, color)
+
+for example (other examples are provided further below):
+
+(obliqueG, rouge)
+
+–
+if the color is an empty string, it displays only the shape (without anything else);
+
+overloading the printing operator << for this class; the implementation should use the method afficher.
+
+2.1.2 The class Construction
+
+The class Construction represents the ‘‘buildings'' in our program. A ‘‘building'' is a collection of ‘‘building blocks'' placed in a 3-dimensional space.
+
+This class must have an attribute contenu (respect strictly this name) which is a 3-dimensional dynamic array of ‘‘building blocks'', i.e. a vector of vector of vector of Brique.
+
+To ease automatic grading, YOU MUST START THE CLASS Construction IN THE FOLLOWING WAY:
+
+class Construction
+{
+  friend class Grader;
+The order to internally represent the 3 dimensions (from what direction you look at the building) is shown here:
+
+
+
+This means that the first index (i above) represents the heigth, the second (j) the depth and the third (k) the width.
+
+Afterwards, add to the class Construction:
+
+a constructor taking as parameter a Brique and creating the contenu as an 1x1x1 array containing only this brick;
+
+a public method with the prototype
+
+ostream& afficher(ostream& sortie) const ;
+
+displaying the building's content layer by layer as shown further below in the output example (a message ‘‘Couche numéro :'' (English: Layer number) must be displayed at the beginning of each layer of the construction). If the construction is empty, nothing is displayed.
+
+2.1.3 Operators for the class Construction
+
+The following ten operators must be added to the class Construction (Those operators are only used to describe the layers of the construction. It is not their purpose to check whether the corresponding result is physically possible or not.):
+
+the (external) operator for printing << which should use the method afficher;
+
+the internal operator operator^= and the external operator operator^ which adds a Construction on top:
+
+–
+a ^= b; adds the Construction b on top of Construction a, as shown here:
+
+
+
+–
+a ^ b; creates a new Construction which is the result of Construction b placed on top of Construction a;
+
+the internal operator operator-= and the external operator operator- which adds a Construction behind:
+
+
+
+To make it simple, this operator does the following tests (this can be implemented with only 1 test): if the height of b (element added behind) is smaller than the height of a, no action is taken (a is not modified); if, by contrast, it is larger, then we only add the part of the same height as a and the rest of b is ignored.
+
+Here are a few examples:
+
+
+
+the internal operator operator+= and the external operator operator+ which adds a Construction to the right:
+
+
+
+This operator does the following tests (this can be implemented with 2 tests only):
+
+–
+if the height of b (the element added to the right) is smaller than the height of a, no action is taken (a is not modified); if, by contrast, it is higher, then we only add the part of the same height as a, the rest of b is ignored;
+
+–
+if the depth of b is smaller than the depth of a, no action is taken (a is not modified); if, by contrast, it is larger, we only add the part of the same depth as a, the rest of b is ignored.
+
+
+
+Here are a few general examples more:
+
+
+
+the following operators
+
+const Construction operator*(unsigned int n, Construction const& a);
+const Construction operator/(unsigned int n, Construction const& a);
+const Construction operator%(unsigned int n, Construction const& a);
+allow us to repeat easily some operations:
+
+–
+n * a is the same as a + a + a, with + repeated n-1 times;
+
+–
+n / a is the same as a ^ a ^ a, with ^ repeated n-1 times;
+
+–
+n % a is the same as a - a - a, with - repeated n-1 times .
+
+Examples of using these operators are given in the provided main() and the output is also shown further below.
+
+2.2 Methodology
+We suggest that you work carefully, step by step, testing your code after each step:
+
+start with the class Brique (and test your implementation);
+
+write the basics of the class Construction, including the constructor and the printing operator;
+
+start by overloading the internal operator operator^= that simply adds a layer of blocks above the building; test it right away with two simple ‘‘basic blocks'';
+
+next, add and test the operator operator-= that adds building blocks in the 2nd dimension;
+
+then add the one that works in the 3rd dimension (that is operator+=);
+
+continue with overloading their external counterparts (operators operator^, operator- and operator+);
+
+finally, add the ‘‘repeated operators'' (operators operator/, operator% and operator*);
+
+verify that the main() gives the expected results.
+
+2.3 Execution examples
+The example of output below corresponds to the provided program.
+
+Couche 4 :
+                  (obliqueG, rouge) (obliqueD, rouge)
+                  (obliqueG, rouge) (obliqueD, rouge)
+                  (obliqueG, rouge) (obliqueD, rouge)
+Couche 3 :
+(obliqueG, rouge) ( pleine , rouge) ( pleine , rouge) (obliqueD, rouge)
+(obliqueG, rouge) ( pleine , rouge) ( pleine , rouge) (obliqueD, rouge)
+(obliqueG, rouge) ( pleine , rouge) ( pleine , rouge) (obliqueD, rouge)
+Couche 2 :
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+Couche 1 :
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+Couche 0 :
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)
+( pleine , blanc) ( pleine , blanc) ( pleine , blanc) ( pleine , blanc)

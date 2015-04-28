@@ -10,13 +10,16 @@ using namespace std;
 class Mise {
 protected:
   int mise_; // number of chips set
-  int mise () const {
+
+public:
+  //Mise () {};
+  Mise (int n): mise_(n) {};
+  virtual ~Mise() {};
+
+  virtual int mise () const final {
     return mise_;
   }
 
-public:
-  Mise () {};
-  Mise (int n): mise_(n) {};
   virtual int gain (int winning_number) const = 0;
 };
 
@@ -27,7 +30,7 @@ protected:
   static int factor;
 public:
   Pleine (int cnt,int betnn) : Mise(cnt),betonnum_(betnn) {};
-  Pleine() {};
+//  Pleine() {};
   int gain (int winning_number) const {
     int amount=0;
     if (winning_number == betonnum_)
@@ -45,7 +48,7 @@ protected:
   static int red[18];
 public:
   Rouges(int cnt) : Mise(cnt) {};
-  Rouges() {};
+//  Rouges() {};
 
   int gain (int winning_number) const {
     int arraySize = sizeof(red)/sizeof(red[0]);
@@ -61,34 +64,37 @@ public:
 
 int Rouges :: red[18]  = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36};
 
-class Joueur : public virtual Pleine, public virtual Rouges {
+class Joueur {
 
 private:
   string nom_;
-  Mise* strt=nullptr; 
+  Mise* strt; 
 
 public:
-  Joueur (string nm) : nom_(nm) {};
+  Joueur (string nm) : nom_(nm) {strt=nullptr;}
   Joueur(const Joueur& that) = delete;
   
   string nom () const {
     return nom_;
   }
   void set_strategie(Mise *strategie) {
+//    cout << "strategy is: " << strategie << endl;
     strt = strategie;
+//    cout << "strt is: " << strt << endl;
   }
 
   int mise() const {
     int cnt=0;
     if (strt != nullptr)
-      cnt = mise();
+//      cout << "mise is: " << Mise::mise() << endl;
+      cnt = strt->mise();
+//    cout << "cnt is " << cnt << endl;
     return cnt;
   }
 
   int gain (int winning_number) const {
     int amount = 0;
     if (strt != nullptr)
-      //amount = 0;
       amount = strt->gain(winning_number);
     return amount;
   }
@@ -98,19 +104,22 @@ class Roulette {
 protected:
   vector<const Joueur*> pvec;
   int numdrawn_;
-  static int casino_bal;
 
 public:
   Roulette() {};
+  virtual ~Roulette () {};
   Roulette(const Roulette& that) = delete;
   friend ostream& operator<<(ostream&, const Roulette&);
 
-  void participe (const Joueur& op) {
-    pvec.push_back(&op);
-  }
+  virtual void participe (const Joueur& op) {
+    bool found=false;
 
-  int bal () const {
-    return casino_bal;
+    for (int i=0;i<nombre_participants();i++)
+      if (pvec[i] == &op)
+        found=true;
+
+    if (!found)
+      pvec.push_back(&op);
   }
 
   int tirage() const {
@@ -128,67 +137,75 @@ public:
   int gain_maison() const {
     int gain=0;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
-      if (!(*it)->gain(tirage()))
-        gain += (*it)->mise();
-      else
+      if (!(*it)->gain(tirage())) {
+//        cout << "gain: " << this->perte_mise((*it)->mise()) << endl;
+        gain += this->perte_mise((*it)->mise());
+      }
+      else { 
+//        cout << "loss: " << (*it)->gain(tirage()) << endl;
         gain -= (*it)->gain(tirage());
+      }
     }
     return gain;
   }
 
   virtual int perte_mise(int player_bet) const = 0;
-  virtual void affiche (ostream& out) const = 0;
+  virtual void afficher (ostream& out) const = 0;
 
   void annoncer() const {
     cout << "Croupier : le numéro du tirage est le " << tirage() << endl;
     for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
+//      cout << "size is : " << pvec.size() << endl;
       if (!(*it)->gain(tirage()))
-        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et perd " << this->perte_mise(gain_maison()) << endl;
+        cout << "Le joueur " << (*it)->nom() << " a misé " << (*it)->mise() << " et perd " << this->perte_mise((*it)->mise()) << endl;
       else
-        cout << "Le joueur" << (*it)->nom() << " a misé " << (*it)->mise() << " et gagne " << (*it)->gain(tirage()) << endl;
+        cout << "Le joueur " << (*it)->nom() << " a misé " << (*it)->mise() << " et gagne " << (*it)->gain(tirage()) << endl;
     }
-    cout << "Gain/perte du casino : " << bal() << endl;
+    cout << "Gain/perte du casino : " << gain_maison() << endl;
   }
 };
 
 ostream& operator<< (ostream& os,const Roulette& other) {
-  other.affiche(os);
+  other.afficher(os);
   return os;
 }
-
-int Roulette::casino_bal=0;
 
 class RouletteFrancaise : public Roulette {
 public:
   RouletteFrancaise () {};
   int perte_mise(int player_bet) const {
-    int tot=0;
-    for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
-      tot += (*it)->mise();
-    }
-    return tot;
+    return player_bet;
   }
+  
 
-  void affiche(ostream& out) const {
-    out << "Roulette française :" << endl;
+  void afficher(ostream& out) const {
+    out << "Roulette française";
   }
 };
-
 
 
 class RouletteAnglaise : public Roulette {
 public:
   RouletteAnglaise () {};
   int perte_mise(int player_bet) const {
-    int tot=0;
-    for (vector<const Joueur*>::const_iterator it = pvec.begin() ; it != pvec.end(); ++it) {
-      tot += ((*it)->mise())/2;
-    }
-    return tot;
+    return player_bet/2;
   }
 
-  void affiche(ostream& out) const {
-    out << "Roulette anglaise :" << endl;
+  void participe (const Joueur& op) {
+    bool found=false;
+
+    for (int i=0;i<nombre_participants();i++) {
+      if (pvec[i] == &op)
+        found=true;
+    }
+
+    if (!found and nombre_participants() < 10)
+      pvec.push_back(&op);
+  }
+
+
+  void afficher(ostream& out) const {
+    out << "Roulette anglaise";
   }
 };
 
