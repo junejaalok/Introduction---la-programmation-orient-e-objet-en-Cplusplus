@@ -76,9 +76,9 @@ public:
 double Transport :: TARIF_LONG(1500.0);
 double Transport :: TARIF_BASE(200.0);
 
-class OptionCombinee : public Sejour, public Transport{
+class OptionCombinee : public Sejour, public Transport,public OptionVoyage{
 public:
-    OptionCombinee (string nm, double ff, int ngt, double prc,bool dur=false):Sejour(nm,ff,ngt,prc),Transport(nm,ff,dur){};
+    OptionCombinee (string nm, double ff, int ngt, double prc,bool dur=false):Sejour(nm,ff,ngt,prc),Transport(nm,ff,dur),OptionVoyage(nm,ff) {};
     double prix() {
         return (0.75 * ( Sejour::prix() + Transport::prix() ));
     }
