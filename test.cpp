@@ -1,36 +1,37 @@
 #include <iostream>
 using namespace std;
 
-	class Number {
-	private:
-		int n;
-	public:
-		Number() : n(0) {
-			std::cout << n;
-		}
+class A
+{
+private:
+	int a;
+public:
+	A(int a1) : a(a1) { }
+	int getA() const { return a; }
+	void display() const { cout << "A" << getA() << " ";}
+};
 
-		Number( int nn )
-		 : n(nn)
-		{
-			std::cout << n;
-		}
+class B : public A
+{
+private:
+	int b;
+public:
+	B(int a1, int b1) : A(a1), b(b1) { }
+	int getB() const { return b; }
+	void display() const { cout << "B"  << getA() << " ";}
+};
 
-		Number(Number const& otherNum)
-		 : n(otherNum.n+1)
-		{
-			std::cout <<  n;
-		}
+void print(A const& obj) {
+	obj.display();
+}
 
-		void display() { std::cout << n; }
-		void increase() { n += 1; }
-	};
-	
-	int main(){
-		Number a, b(1), c(b);
-		b.increase();
-		c.display();
-		b.display();
-	}
+int main() {
+A a(1); B b(2,3); A c(b);
+print(a);
+print(b);
+print(c);
+return 0;
+}
 
 /*	class Rectangle {
 	private:

@@ -1,0 +1,300 @@
+Exercise 1 — Travel agency
+A travel agent wishes that you help him to handle his travel offers.
+
+1.1 Description
+Download the source code available at the course webpage (https://d396qusza40orc.cloudfront.net/intropoocpp/assignments/voyages.cc) and complete it according to the instructions below.
+
+WARNING: you shall not modify neither the beginning nor the end of the provided file. It's thus mandatory to proceed as follows:
+
+save the downloaded file as voyages.cc or voyages.cpp;
+
+write your code between these two provided comments:
+
+/*******************************************
+ * Complétez le programme à partir d'ici.
+ *******************************************/
+
+/*******************************************
+ * Ne rien modifier après cette ligne.
+ *******************************************/
+save and test your program to be sure that it works properly; try for instance the values used in the example given below;
+
+upload the modified file (still named voyages.cc or voyages.cpp) in ‘‘OUTPUT submission'' (not in ‘‘Additional''!).
+
+1.2 The code to be produced
+1.2.1 The travel options
+
+Our travel agent sells traveling kits composed of different options. These will be modeled using a class OptionVoyage (means TravelOption).
+
+An OptionVoyage is characterized by:
+
+its name (a string);
+
+its default price, flat fee (a double).
+
+The OptionVoyage class includes:
+
+a constructor initializing the attributes using parameters in an order compatible with the given main;
+
+a method nom() returning the name of the option;
+
+a method double prix() returning the flat fee for the option;
+
+a method void affiche(ostream&) displaying the option according to the following format:
+
+<nom> -> <prix> CHF
+where <nom> is the name of the option and <prix> is its price.
+
+The class OptionVoyage must be constrained by a class Affichable to provide the above mentioned affiche method.
+
+You will also implement an overloading of the operator << able to display an Affichable by the means of its affiche method.
+
+The traveling options can be specialized using different sub-classes. You will first have to model the following two of them: the transport means (the Transport class) and the kind of accommodation (the Sejour class; ‘‘séjour'' means ‘‘stay'').
+
+1.2.2 the Sejour class
+
+A Sejour is a type of OptionVoyage characterized by a number of nights (an integer) and the price per night (a double).
+
+The price of a Sejour is simply the number of nights multiplied by the price per night, to which the flat fee of the option is added. The computation of that price shall not contain any code duplication at all.
+
+The Sejour class shall of course have a constructor conforming to the provided main (arguments order: the name, the flat fee, the number of nights and the price per night).
+
+1.2.3 the Transport class
+
+A Transport is a OptionVoyage characterized by a boolean indicating whether the trip is long or not.
+
+The price of a transport is the constant TARIF_LONG (1500.0) if the trip is long and TARIF_BASE (200.0) if not, to which we add the flat fee of the option. These two constants shall be declared as static members of the class.
+
+The Transport class shall of course have a constructor conforming to the provided main with arguments given in following order: the name of the option, the flat fee and a boolean with value true for long trips and false otherwise. By default, a Transport has a short trip.
+
+1.2.4 Combined offers
+
+The travel agent also proposes combined offers including both transport and accomodation. You are asked to implement a class OptionCombinee (‘‘Combined offer'') for modeling such offers. An OptionCombinee is a Transport as well as a Sejour, but should behave as a single OptionVoyage.
+
+The class OptionCombinee will contain:
+
+a constructor conforming to the provided main; the arguments will be given according to the following order: the name of the option, the flat fee, the number of nights, the price per night and a boolean with value true for long trips and false otherwise (trips are short by default);
+
+a specific redefinition of the method prix. The price of an OptionCombinee is the 75% of the sum of the accomodtion's price (as computed for a Sejour) and the transport's price (as computed for a Transport).
+
+1.2.5 Travel kit
+
+The travel agent sells kits consisting of multiple options.
+
+You are asked to code a class KitVoyage as a ‘‘heterogeneous collection'' of OptionVoyage (a vector of ‘‘const OptionVoyage*'').
+
+The class KitVoyage will also be characterized by the locations of departure and destination (two strings).
+
+The class KitVoyage will have:
+
+a constructor compatible with the provided main (the first argument being the departure and the second the destination);
+
+a method double prix() that will calculate the price of the kit as the sum of the prices of all the options;
+
+a method ajouter_option, compatible with the provided main and allowing to add an OptionVoyage to the collection of options of the kit (the options will be added at the end of the collection);
+
+a method annuler() that resets the collection to an empty set (use the clear method of vector).
+
+Your design must reflect the fact that a travel kit is an Affichable (i.e. can be displayed). The display format for a travel kit must be as follows:
+
+Voyage de <depart> à <destination>: vous n'avez rien réservé !
+if the set of traveel options is empty, and otherwise:
+
+Voyage de <depart> à <destination>, avec pour options :
+- <nom option1> -> <prix option1> CHF
+- ....
+- <nom optionN> -> <prix optionN> CHF
+Prix total : <prix du kit> CHF
+where <depart> is the departure location of the kit, destination, its destination and <prix du kit> its price. The display will be followed by a newline.
+
+1.3 Execution example
+Voyage de Zurich à Paris, avec pour options :
+   - Trajet en train ->  250 CHF
+   - Hotel 3* : Les amandiers  ->  540 CHF
+Prix total : 790 CHF
+
+Voyage de Zurich à New York, avec pour options :
+   - Trajet en avion ->  1550 CHF
+   - Hotel 4* : Ambassador Plazza   ->  600 CHF
+Prix total : 2150 CHF
+
+Voyage de Zurich à New York, avec pour options :
+   - Hotel 4* : Ambassador Plazza et trajet en avion ->  165\
+0 CHF
+Prix total : 1650 CHF
+
+Voyage de Zurich à Paris:  vous n'avez rien réservé !
+
+Voyage de Zurich à New York:  vous n'avez rien réservé !
+
+The character '\' is not part of the output and is not followed by a newline.
+
+Exercise 2 — Roulette Game
+In this exercise, we are interested in simulating the strategies for the game called ‘‘roulette''.
+
+Roulette is a game of luck in which each player bets chips on a square. The squares contain numbers and are red or black.
+
+When players have made their bets, the croupier spins the ball and says ‘‘rien ne va plus'' (‘‘no more bets''). From that moment, betting is no more allowed. When the ball lands on a number, players who bet on the number or the color square of that number collect their win, calculated based on the bet type; otherwise they lose their bet.
+
+Download the source code available at the course webpage (https://d396qusza40orc.cloudfront.net/intropoocpp/assignments/casino.cc) and complete it according to the instructions below.
+
+WARNING: you shall not modify neither the beginning nor the end of the provided file. It's thus mandatory to proceed as follows:
+
+save the downloaded file as casino.cc or casino.cpp;
+
+write your code between these two provided comments:
+
+/*******************************************
+ * Complétez le programme à partir d'ici.
+ *******************************************/
+
+/*******************************************
+ * Ne rien modifier après cette ligne.
+ *******************************************/
+save and test your program to be sure that it works properly; try for instance the values used in the example given below;
+
+upload the modified file (still named casino.cc or casino.cpp) in ‘‘OUTPUT submission'' (not in ‘‘Additional''!).
+
+2.1 The code to be produced
+2.1.1 The bets
+
+Initially, implement a class called Mise, which represents the bets of players.
+
+A Mise (i.e., "Bet") is simply characterized by the number of chips bet (this data member of type int will be called mise_).
+
+The class Mise is composed of:
+
+A constructor that initializes its attribute using a value passed as a parameter;
+
+a method int mise() which returns the number of chips bet. This method should not be overridden by any subclasses of Mise;
+
+A method called int gain(int winning_number), calculating and returning the amount won (i.e. the gain) as a function of the drawn number winning_number (on which the ball drops when the wheel stops turning). This method cannot be concretely defined for bets in general.
+
+For simplicity, we assume that only the following two types of bets are possible:
+
+Betting on a number. This type of bet returns 35 times the number of chips bet;
+
+Betting on the red numbers. This type of bet returns one time the amount bet.
+
+You are asked to implement the class hierarchy mentioned above.
+
+To do that, you will create a class called Pleine for representing a bet on a number (which is passed to the constructor) and a class called Rouges for representing a bet on red.
+
+The main purpose of these classes is to implement specific methods to calculate the gain. These methods will return a gain if the drawn number (i.e., on which the ball stopped) is:
+
+the number which was set in Pleine, i.e., on which a bet was put;
+
+of the color of the bet for Rouges.
+
+Otherwise, the gain returned is zero.
+
+You must also define in these classes:
+
+the static member attributes representing:
+
+(a)
+for Pleine, the multiplication factor of the bet (with value 35);
+
+(b)
+for Rouges, the array of 18 numbers that correspond to red square ({1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34 et 36 }) (of type array); (list present in the provided file).
+
+2.1.2 Players
+
+We represent the players of a roulette game with a class called Joueur. Each player has a name ("nom") and a betting strategy ("strategie", specifically an object of type Mise*).
+
+The methods associated with a player are:
+
+A constructor that is compatible with the provided main function;
+
+A method nom returning the player's name;
+
+A method void set_strategie(Mise *strategie) which changes the player's strategy (the kind of his bet);
+
+A method int mise() returning the number of chips used by the player's strategy. If the current strategy of the player is nullptr, then the method returns zero (0);
+
+A method int gain(int winning_number) returning the gain allowed by the current player's strategy in case the number winning_number is drawn. If the current strategy is nullptr, then the method returns zero (0).
+
+It must not be possible to copy a Joueur.
+
+2.1.3 The Roulette Game
+
+For representing a roulette game, create a class called Roulette consisting of (at least):
+
+A set of players (coded using an vector<const Joueur*>);
+
+the number drawn.
+
+The class Roulette includes at least the following methods:
+
+a method participe for adding a player to the set of players (see the examples for usage of this method in the provided main function). The player will always be added at the end of the vector;
+
+a method int tirage() returning the winning number;
+
+a method int nombre_participants() returning the number of players in the game;
+
+a method void rien_ne_va_plus(int valeur) ("no more bets") which sets the value of the last number drawn. For simplicity, we cheat here: the method basically takes as an argument the number we want to see drop/come out. This number is then simply assigned as the number drawn. (see the examples in the provided main function);
+
+a method int perte_mise(int player_bet) calculating how much each player loses of his/her bet (which is retained by the casino). We consider that it is not possible to make this calculation for just any roulette game (two types of roulette games will appear below);
+
+a method int gain_maison() computing the gain of the house of the game. If a player wins, the casino loses the amount of the gain. If the player loses, then the casino earns what the player loses of its bet;
+
+a method « void afficher(ostream& out) », without any definition for a general Roulette, but allowing its concrete subclasses (see below) to print their own name (and have a polymorphic behaviour with the usual printing operator <<);
+
+a method annoncer which displays the representation of a roulette in the following format (see also the provided simuler_jeu() function):
+
+  Croupier : le numéro du tirage est le <numéro tiré>
+  Le joueur <nom joueur1> a misé <montant1> et perd <mise perdue>
+  Le joueur <nom joueur2> a misé <montant2> et gagne <gain2>
+  ...
+  Le joueur <nom joueurX> a misé <montantX> et gagne <gainX>
+  Gain/perte du casino : <gain ou perte du casino>
+  
+It must not be possible to copy a Roulette. Moreover, the Roulette class must not impose more constraints on its subclasses' methods than the presence of perte_mise and afficher.
+
+Two types of roulette games are considered:
+
+the French roulette games (class RouletteFrancaise) where players lose their entire bet;
+
+the English roulette games (class RouletteAnglaise) where players lose half of their bets (here, we deliberately simplify the game). Furthermore, the English roulette game admits at most 10 players. A player cannot be added to the game if the maximum number of players has been reached.
+
+2.2 Execution example
+Roulette anglaise :
+Croupier : le numéro du tirage est le 12
+Le joueur Dupond a misé 100 et perd 50
+Le joueur Dupont a misé 30 et gagne 30
+Le joueur Dupond a misé 20 et perd 10
+Gain/perte du casino : 30
+
+Croupier : le numéro du tirage est le 1
+Le joueur Dupond a misé 100 et gagne 3500
+Le joueur Dupont a misé 30 et gagne 30
+Le joueur Dupond a misé 20 et perd 10
+Gain/perte du casino : -3520
+
+Croupier : le numéro du tirage est le 31
+Le joueur Dupond a misé 100 et perd 50
+Le joueur Dupont a misé 30 et perd 15
+Le joueur Dupond a misé 20 et perd 10
+Gain/perte du casino : 75
+
+
+Roulette française :
+Croupier : le numéro du tirage est le 12
+Le joueur Dupond a misé 100 et perd 100
+Le joueur Dupont a misé 30 et gagne 30
+Le joueur Dupond a misé 20 et perd 20
+Gain/perte du casino : 90
+
+Croupier : le numéro du tirage est le 1
+Le joueur Dupond a misé 100 et gagne 3500
+Le joueur Dupont a misé 30 et gagne 30
+Le joueur Dupond a misé 20 et perd 20
+Gain/perte du casino : -3510
+
+Croupier : le numéro du tirage est le 31
+Le joueur Dupond a misé 100 et perd 100
+Le joueur Dupont a misé 30 et perd 30
+Le joueur Dupond a misé 20 et perd 20
+Gain/perte du casino : 150
+
+
